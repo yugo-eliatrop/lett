@@ -1,0 +1,94 @@
+import { FC, useEffect } from 'react';
+import { Button, Checkbox, Form, Input, Modal } from 'antd';
+import * as RD from '@devexperts/remote-data-ts';
+import { Blackout } from '../../ui/Blackout';
+
+import { EditedTask } from '../../domain';
+import { SubmitStatus } from './types';
+import { pipe } from 'fp-ts/lib/function';
+
+import s from './TaskForm.module.css';
+import { useRouter } from 'next/router';
+
+type TaskFormViewProps = {
+  editedTask?: EditedTask;
+  onSubmit: (f: EditedTask) => void;
+  onRemove: (f: EditedTask) => void;
+  status: SubmitStatus;
+};
+
+export const TaskFormView: FC<TaskFormViewProps> = ({ onSubmit, onRemove, status, editedTask }) => {
+  const onFinish = (v: { title: string, time: string, active: boolean }) => {
+    onSubmit({ ...v, time: +v.time, id: editedTask?.id });
+  };
+
+  const router = useRouter();
+
+  const [modal, contextHolder] = Modal.useModal();
+
+  useEffect(() => {
+    pipe(
+      status,
+      RD.fold(
+        () => null,
+        () => null,
+        (e) => modal.error({
+          title: 'Error',
+          content: e.message,
+        }),
+        (d) => modal.success({
+          title: 'Success',
+          content: `Task ${d.title} successfully handled`,
+          onOk: () => router.push('/tasks')
+        })
+      )
+    );
+  }, [status]);
+
+  return (
+    <>
+      <Blackout isActive={RD.isPending(status)}>
+        <Form
+          name="basic"
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          initialValues={editedTask || { title: '', time: 15, active: true }}
+          onFinish={onFinish}
+          autoComplete="off"
+        >
+          <Form.Item
+            label="Title"
+            name="title"
+            rules={[{ required: true, message: 'Please input title of task' }]}
+          >
+            <Input minLength={3} />
+          </Form.Item>
+
+          <Form.Item
+            label="Time per day"
+            name="time"
+            rules={[{ required: true, message: 'Please input time' }]}
+          >
+            <Input type='number' max={300} min={15} />
+          </Form.Item>
+
+          <Form.Item name="active" valuePropName="checked" wrapperCol={{ offset: 8, span: 16 }}>
+            <Checkbox>Active</Checkbox>
+          </Form.Item>
+
+          <Form.Item className={s.buttons}>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+            {editedTask?.id && (
+              <Button type="primary" danger onClick={() => onRemove(editedTask)}>
+                Remove
+              </Button>
+            )}
+          </Form.Item>
+        </Form>
+      </Blackout>
+      {contextHolder}
+    </>
+  );
+};

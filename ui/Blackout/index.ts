@@ -1,0 +1,1 @@
+export * from './Blackout.view';

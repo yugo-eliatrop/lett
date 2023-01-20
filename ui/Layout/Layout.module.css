@@ -1,0 +1,11 @@
+.wrapper {
+  min-height: 100vh;
+}
+
+.content {
+  padding: 24px 12px;
+}
+
+.content .title {
+  padding-bottom: 24px;
+}
