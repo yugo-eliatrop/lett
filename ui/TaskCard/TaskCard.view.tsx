@@ -2,7 +2,7 @@ import { Card } from "antd";
 import { useRouter } from "next/router";
 import { FC } from "react";
 import { Task } from "../../domain";
-import { SettingFilled, CaretRightFilled } from "@ant-design/icons"
+import { EditFilled, CaretRightFilled } from "@ant-design/icons"
 
 import s from './TaskCard.module.css';
 
@@ -17,8 +17,8 @@ export const TaskCard: FC<TaskCardProps> = ({ data: { title, id, active, time } 
     <Card
       className={s.card}
       actions={[
-        <SettingFilled onClick={() => router.push(`/task/${id}`)} />,
-        <CaretRightFilled />
+        <EditFilled onClick={() => router.push(`/task/${id}`)} />,
+        active && <CaretRightFilled onClick={() => router.push(`/task/play/${id}`)} />
       ]}
     >
       <Card.Meta

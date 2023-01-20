@@ -1,0 +1,9 @@
+.timeBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card + .card {
+  margin-top: 12px;
+}

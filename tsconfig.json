@@ -13,7 +13,14 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
+    "paths": {
+      "@ui/*": ["./ui/*"],
+      "@domain/*": ["./domain/*"],
+      "@features/*": ["./features/*"],
+      "@services/*": ["./services/*"],
+      "@utils/*": ["./utils/*"]
+    }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "node_modules/@ckeditor/ckeditor5-react/dist/ckeditor.d.ts"],
   "exclude": ["node_modules"]

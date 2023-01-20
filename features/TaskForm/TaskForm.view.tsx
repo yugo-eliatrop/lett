@@ -45,6 +45,12 @@ export const TaskFormView: FC<TaskFormViewProps> = ({ onSubmit, onRemove, status
     );
   }, [status]);
 
+  const showConfirmationModal = () => editedTask && modal.confirm({
+    title: 'Confirm removing',
+    content: 'Are you sure to remove the task?',
+    onOk: () => onRemove(editedTask),
+  });
+
   return (
     <>
       <Blackout isActive={RD.isPending(status)}>
@@ -81,7 +87,7 @@ export const TaskFormView: FC<TaskFormViewProps> = ({ onSubmit, onRemove, status
               Submit
             </Button>
             {editedTask?.id && (
-              <Button type="primary" danger onClick={() => onRemove(editedTask)}>
+              <Button type="primary" danger onClick={showConfirmationModal}>
                 Remove
               </Button>
             )}
