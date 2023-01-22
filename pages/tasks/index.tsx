@@ -20,7 +20,7 @@ const TasksPage: FC<TasksPageProps> = ({ tasks }) => {
 
   return (
     <Layout title="Tasks">
-      {tasks.map(task => <TaskCard data={task} key={task.id} />)}
+      {tasks.length ? tasks.map(task => <TaskCard data={task} key={task.id} />) : <p>Not tasks yet</p>}
     </Layout>
   )
 };

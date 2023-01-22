@@ -71,11 +71,11 @@ export const TaskFormView: FC<TaskFormViewProps> = ({ onSubmit, onRemove, status
           </Form.Item>
 
           <Form.Item
-            label="Time per day"
+            label="Time per week"
             name="time"
             rules={[{ required: true, message: 'Please input time' }]}
           >
-            <Input type='number' max={300} min={15} />
+            <Input type='number' min={70} />
           </Form.Item>
 
           <Form.Item name="active" valuePropName="checked" wrapperCol={{ offset: 8, span: 16 }}>
