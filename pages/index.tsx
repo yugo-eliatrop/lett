@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import { Layout } from '../ui/Layout'
 import { FC } from 'react';
 import { GetServerSideProps } from 'next';
@@ -31,32 +30,26 @@ type DashboardProps = {
 
 const Dashboard: FC<DashboardProps> = ({ totalMins, mostPopularTask }) => {
   return (
-    <>
-      <Head>
-        <title>LETT</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Layout title='Dashboard'>
-        <p>
-          <strong>Total mins:</strong>
-          &nbsp;
-          <span>{totalMins}</span>
-        </p>
-        <p>
-          <strong>Most popular task:</strong>
-          &nbsp;
-          {
-            pipe(
-              mostPopularTask,
-              O.fold(
-                () => <span>not found</span>,
-                (t) => <span>{t.title} ({t.time} mins)</span>
-              )
+    <Layout title='Dashboard'>
+      <p>
+        <strong>Total mins:</strong>
+        &nbsp;
+        <span>{totalMins}</span>
+      </p>
+      <p>
+        <strong>Most popular task:</strong>
+        &nbsp;
+        {
+          pipe(
+            mostPopularTask,
+            O.fold(
+              () => <span>not found</span>,
+              (t) => <span>{t.title} ({t.time} mins)</span>
             )
-          }
-        </p>
-      </Layout>
-    </>
+          )
+        }
+      </p>
+    </Layout>
   )
 };
 
