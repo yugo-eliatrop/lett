@@ -1,5 +1,5 @@
 import { createElement, FC, useEffect, useState } from 'react';
-import { combineLatest, merge, Observable, of, switchMap } from 'rxjs';
+import { combineLatest, Observable, of, switchMap } from 'rxjs';
 
 type ObservablesToProps<Props extends Record<string, unknown>> = { [K in keyof Props]: Observable<Props[K]> };
 

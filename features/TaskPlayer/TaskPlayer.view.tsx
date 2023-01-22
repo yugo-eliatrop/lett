@@ -1,46 +1,62 @@
 import { FC, useEffect, useState } from "react";
 
-import { Activity, Task } from '../../domain';
+import { ActivitiesStatistics, Activity, Task } from '../../domain';
 import * as O from 'fp-ts/Option';
 import * as RD from '@devexperts/remote-data-ts';
-import { Card, Input, Button, Modal } from "antd";
+import { Card, Input, Button, Modal, Spin } from "antd";
 import { pipe, flow } from "fp-ts/lib/function";
 
 import s from './TaskPlayer.module.css';
 import { CaretRightOutlined, ArrowRightOutlined, BorderOutlined } from "@ant-design/icons";
 import { toMMSS } from "@utils/time-format";
-import { interval, Subscription } from "rxjs";
+import { interval, of, switchMap } from "rxjs";
 import { Blackout } from "@ui/Blackout";
 
 export type TaskPlayerProps = {
   task: Task;
-  createActivity: (taskId: Task['id'], mins: number) => void;
+  weekStatistics: RD.RemoteData<Error, ActivitiesStatistics>;
+  createActivity: (time: number) => void;
   lastActivityStatus: RD.RemoteData<Error, Activity>;
 }
 
-export const TaskPlayer: FC<TaskPlayerProps> = ({ task, createActivity, lastActivityStatus }) => {
+export const TaskPlayerView: FC<TaskPlayerProps> = ({ task, createActivity, lastActivityStatus, weekStatistics }) => {
   const [stopwatch, setStopwatch] = useState<O.Option<number>>(O.none);
   const [time, setTime] = useState<O.Option<number>>(O.none);
-  const [swSubscription, setSwSubscription] = useState<O.Option<Subscription>>(O.none);
+  const [startDate, setStartDate] = useState<O.Option<Date>>(O.none);
   const [modal, contextHolder] = Modal.useModal();
 
   const onSubmit = () => {
     pipe(
       time,
-      O.map(mins => createActivity(task.id, mins)),
+      O.map(mins => createActivity(mins)),
     );
   };
 
-  const startStopwatch = () => {
-    const subscription = interval(100).subscribe(flow(O.of, setStopwatch));
-    setSwSubscription(O.of(subscription));
-  };
+  useEffect(() => {
+    const sub = pipe(
+      startDate,
+      O.map(
+        (d) => interval(1000).pipe(
+            switchMap(() => of(O.of(Math.floor((new Date().getTime() - d.getTime()) / 1000)))
+          )
+        ).subscribe(setStopwatch),
+      )
+    );
+    return () => {
+      pipe(sub, O.map(s => s.unsubscribe()))
+    };
+  }, [startDate]);
+
+  const startStopwatch = () => pipe(
+    new Date(),
+    O.of,
+    setStartDate,
+  );
 
   const stopStopwatch = () => {
-    setTime(pipe(stopwatch, O.map(s => Math.round(s / 60))));
+    pipe(startDate, O.map(d => Math.round((new Date().getTime() - d.getTime()) / 60_000)), setTime)
+    setStartDate(O.none);
     setStopwatch(O.none);
-    pipe(swSubscription, O.map(s => s.unsubscribe()));
-    setSwSubscription(O.none);
   };
 
   useEffect(() => {
@@ -107,15 +123,36 @@ export const TaskPlayer: FC<TaskPlayerProps> = ({ task, createActivity, lastActi
               onChange={e => setTime(O.fromNullable(+e.target.value))}
               value={pipe(time, O.map(x => `${x}`), O.getOrElse(() => ''))}
             />
-            <Button disabled={O.isNone(time)} onClick={onSubmit}>
+            <Button disabled={O.isNone(time) || !time.value} onClick={onSubmit}>
               <ArrowRightOutlined />
             </Button>
           </div>
         </Blackout>
       </Card>
-      {/* <Card className={s.card} size="small" title="Statistics">
-        <span>Not implemented yet</span>
-      </Card> */}
+      <Card className={s.card} size="small" title="Statistics">
+        {
+          pipe(
+            weekStatistics,
+            RD.fold(
+              () => null,
+              () => <Spin />,
+              (e) => <p>{e.message}</p>,
+              (stat) => (
+                <>
+                  {stat.length ? stat.map(st => (
+                    <div className={s.timeBox} key={st.id}>
+                      <span>{new Date(st.day).toDateString()}</span>
+                      <span>{st.time}</span>
+                    </div>
+                  )) : (
+                    <p>No statistics yet</p>
+                  )}
+                </>
+              )
+            )
+          )
+        }
+      </Card>
       {contextHolder}
     </>
   );

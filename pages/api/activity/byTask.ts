@@ -1,4 +1,4 @@
-import { Task } from '../../../domain';
+import { ActivitiesStatistics } from '../../../domain';
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { dbService } from '../../../services/db';
 import * as TE from 'fp-ts/TaskEither';
@@ -8,17 +8,19 @@ import { pipe } from 'fp-ts/lib/function';
 // @api-client-method: POST
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<E.Either<string, Task>>
+  res: NextApiResponse<E.Either<string, ActivitiesStatistics>>
 ) => {
-  const task = await pipe(
+  const stat = await pipe(
     req.body,
     JSON.parse,
     (data) => TE.tryCatch(
-      () => dbService.task.create({ data }),
+      () => dbService.activity.byTaskAndThisWeek(data.id),
       (e) => (e as Error).message,
-    )
+    ),
+    TE.map(s => s.map(item => ({ ...item, time: Number(item.time) }))),
   )();
-  res.json(task);
+  res.json(stat);
 };
 
 export default handler;
+

@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 
 import { Task } from '../../../domain';
 import { GetServerSideProps } from 'next';
@@ -8,7 +8,7 @@ import * as TO from 'fp-ts/TaskOption';
 import * as t from 'io-ts';
 import { flow, pipe } from 'fp-ts/lib/function';
 import { Layout } from '@ui/Layout';
-import { TaskPlayer } from '@features/TaskPlayer';
+import { createTaskPlayer } from '@features/TaskPlayer';
 
 export const getServerSideProps: GetServerSideProps<EditTaskPageProps> = async (context) => {
   const task = await pipe(
@@ -28,18 +28,17 @@ type EditTaskPageProps = {
 }
 
 const EditTaskPage: FC<EditTaskPageProps> = ({ task }) => {
+  const TaskPlayer = useMemo(() => pipe(
+    task,
+    O.fold(
+      (): FC => () => <p>Task not found or disabled</p>,
+      createTaskPlayer,
+    ),
+  ), [task]);
   
   return (
     <Layout title={pipe(task, O.map(t => `Run ${t.title}`), O.getOrElse(() => ''))}>
-      {
-        pipe(
-          task,
-          O.fold(
-            () => <p>Task not found or disabled</p>,
-            task => <TaskPlayer task={task} createActivity={console.log} lastActivityStatus={{ _tag: 'RemoteInitial' }} />
-          ),
-        )
-      }
+      <TaskPlayer />
     </Layout>
   )
 }

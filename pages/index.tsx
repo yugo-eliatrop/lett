@@ -5,11 +5,16 @@ import { GetServerSideProps } from 'next';
 import { dbService } from '../services/db';
 import { Task } from '../domain';
 import * as O from 'fp-ts/Option';
-import { pipe } from 'fp-ts/lib/function';
+import * as TO from 'fp-ts/TaskOption';
+import { pipe, flow } from 'fp-ts/lib/function';
 
 export const getServerSideProps: GetServerSideProps<DashboardProps> = async () => {
   const activities = await dbService.activity.findMany();
-  const mostPopularTask = O.fromNullable(await dbService.task.findFirst());
+  const mostPopularTask = await pipe(
+    TO.tryCatch(() => dbService.task.mostPopular()),
+    TO.chain(flow(TO.fromNullable)),
+    TO.map(t => ({ ...t, time: Number(t.time) })),
+  )();
   const totalMins = activities.reduce((sum, item) => sum + item.time, 0);
   return {
     props: {
@@ -45,7 +50,7 @@ const Dashboard: FC<DashboardProps> = ({ totalMins, mostPopularTask }) => {
               mostPopularTask,
               O.fold(
                 () => <span>not found</span>,
-                (t) => <span>{t.title}</span>
+                (t) => <span>{t.title} ({t.time} mins)</span>
               )
             )
           }

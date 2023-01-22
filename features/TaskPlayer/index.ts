@@ -1,1 +1,1 @@
-export * from './TaskPlayer.view';
+export { createTaskPlayerContainer as createTaskPlayer} from './TaskPlayer.container';
