@@ -1,4 +1,4 @@
-import { BehaviorSubject, of, from, shareReplay, Observable, merge, switchMap } from "rxjs";
+import { BehaviorSubject, of, from, merge } from "rxjs";
 import { Activity, Task, ActivitiesStatistics } from "../../domain";
 import * as RD from '@devexperts/remote-data-ts';
 import { apiActivityCreate, apiActivityByTask } from "../../api-client";

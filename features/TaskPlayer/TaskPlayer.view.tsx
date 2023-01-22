@@ -11,6 +11,7 @@ import { CaretRightOutlined, ArrowRightOutlined, BorderOutlined } from "@ant-des
 import { toMMSS } from "@utils/time-format";
 import { interval, of, switchMap } from "rxjs";
 import { Blackout } from "@ui/Blackout";
+import { ActivityStatisticsView } from "@ui/ActivityStatistics";
 
 export type TaskPlayerProps = {
   task: Task;
@@ -137,18 +138,7 @@ export const TaskPlayerView: FC<TaskPlayerProps> = ({ task, createActivity, last
               () => null,
               () => <Spin />,
               (e) => <p>{e.message}</p>,
-              (stat) => (
-                <>
-                  {stat.length ? stat.map(st => (
-                    <div className={s.timeBox} key={st.id}>
-                      <span>{new Date(st.day).toDateString()}</span>
-                      <span>{st.time}</span>
-                    </div>
-                  )) : (
-                    <p>No statistics yet</p>
-                  )}
-                </>
-              )
+              (stat) => <ActivityStatisticsView data={stat} goalTime={task.time} />
             )
           )
         }

@@ -35,8 +35,8 @@ export const Layout: FC<LayoutProps> = ({ children, title }) => {
         <h2 className={s.title}>{title}</h2>
         {children}
       </Content>
-      <Footer>
-        <span>LETT</span>
+      <Footer className={s.footer}>
+        <span>LETT - YUGO</span>
       </Footer>
     </AntdLayout>
   )
