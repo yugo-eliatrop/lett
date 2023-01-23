@@ -1,0 +1,12 @@
+.disabled {
+  text-decoration: line-through;
+  color: #bfbfbf;
+}
+
+.item:first {
+  border-top: 1px solid #bfbfbf;
+}
+
+.item {
+  border-bottom: 1px solid #bfbfbf;
+}

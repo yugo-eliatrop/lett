@@ -37,7 +37,7 @@ const EditTaskPage: FC<EditTaskPageProps> = ({ task }) => {
   ), [task]);
   
   return (
-    <Layout title={pipe(task, O.map(t => `Run ${t.title}`), O.getOrElse(() => ''))}>
+    <Layout title={pipe(task, O.map(t => t.title), O.getOrElse(() => ''))}>
       <TaskPlayer />
     </Layout>
   )
