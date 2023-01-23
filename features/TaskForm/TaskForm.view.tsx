@@ -58,7 +58,7 @@ export const TaskFormView: FC<TaskFormViewProps> = ({ onSubmit, onRemove, status
           name="basic"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
-          initialValues={editedTask || { title: '', time: 15, active: true }}
+          initialValues={editedTask || { title: '', time: 35, active: true }}
           onFinish={onFinish}
           autoComplete="off"
         >
@@ -75,7 +75,7 @@ export const TaskFormView: FC<TaskFormViewProps> = ({ onSubmit, onRemove, status
             name="time"
             rules={[{ required: true, message: 'Please input time' }]}
           >
-            <Input type='number' min={70} />
+            <Input type='number' min={35} />
           </Form.Item>
 
           <Form.Item name="active" valuePropName="checked" wrapperCol={{ offset: 8, span: 16 }}>

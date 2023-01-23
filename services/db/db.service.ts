@@ -3,7 +3,7 @@ import { prisma } from './prisma-client';
 import { mostPopularTaskQuery, thisWeekActivitiesOfTask } from './queries';
 
 const customTaskQueries = {
-  mostPopular: async (): Promise<Task | undefined> => (await mostPopularTaskQuery)[0],
+  mostPopular: async (): Promise<Task | undefined> => (await mostPopularTaskQuery())[0],
 }
 
 const customActivitiesQueries = {

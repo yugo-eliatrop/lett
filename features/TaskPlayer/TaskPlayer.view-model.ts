@@ -20,7 +20,7 @@ export const createTaskPlayerViewModel = (task: Task) => {
   const createActivity$ = of(async (time: number) => {
     lastActivityStatusBS$.next(RD.pending);
     // TO DO: remake as observable
-    const res = await apiActivityCreate({ taskId: task.id, time, createdAt: new Date() });
+    const res = await apiActivityCreate({ taskId: task.id, time });
     lastActivityStatusBS$.next(res);
     // TO DO: check subscription with WeakMap
     loadStatistics().subscribe(res => weekStatisticsBS$.next(res));

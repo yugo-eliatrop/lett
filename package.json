@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "yarn gen:api && next dev",
-    "build": "next build",
-    "start": "yarn gen:api && next start -p 7100",
+    "build": "yarn gen:api && next build",
+    "start": "next start -p 7100",
     "lint": "next lint",
     "test": "tsc test.ts && node test.js",
     "gen:api": "ts-node --project ./tsconfig.node.json ./scripts/generate-api-client.ts"

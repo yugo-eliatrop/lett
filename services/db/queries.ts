@@ -1,7 +1,7 @@
 import { Task, ActivitiesStatistics } from '../../domain';
 import { prisma } from "./prisma-client";
 
-export const mostPopularTaskQuery: Promise<Task[]> = prisma.$queryRaw`
+export const mostPopularTaskQuery = (): Promise<Task[]> => prisma.$queryRaw`
 SELECT t.id, t.title, sum(a.time) AS time, t.active 
 FROM tasks AS t
 JOIN activities AS a ON a.task_id = t.id
