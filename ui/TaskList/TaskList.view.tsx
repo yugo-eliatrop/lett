@@ -30,7 +30,8 @@ export const TaskList: FC<TaskListProps> = ({ data }) => {
               )}
               description={(
                 <Link href={`/task/play/${task.id}`}>
-                  <span>{task.time} mins per week, {round(task.time / 7)} per day</span>
+                  <span>{task.time} mins per week</span>
+                  {task.isDaily && <span>,&nbsp;{round(task.time / 7)} per day</span>}
                 </Link>
               )}
             />

@@ -18,7 +18,7 @@ type TaskFormViewProps = {
 };
 
 export const TaskFormView: FC<TaskFormViewProps> = ({ onSubmit, onRemove, status, editedTask }) => {
-  const onFinish = (v: { title: string, time: string, active: boolean }) => {
+  const onFinish = (v: { title: string, time: string, active: boolean, trackable: boolean, isDaily: boolean }) => {
     onSubmit({ ...v, time: +v.time, id: editedTask?.id });
   };
 
@@ -58,7 +58,7 @@ export const TaskFormView: FC<TaskFormViewProps> = ({ onSubmit, onRemove, status
           name="basic"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
-          initialValues={editedTask || { title: '', time: 35, active: true }}
+          initialValues={editedTask || { title: '', time: 35, active: true, trackable: true, isDaily: true }}
           onFinish={onFinish}
           autoComplete="off"
         >
@@ -80,6 +80,14 @@ export const TaskFormView: FC<TaskFormViewProps> = ({ onSubmit, onRemove, status
 
           <Form.Item name="active" valuePropName="checked" wrapperCol={{ offset: 8, span: 16 }}>
             <Checkbox>Active</Checkbox>
+          </Form.Item>
+
+          <Form.Item name="trackable" valuePropName="checked" wrapperCol={{ offset: 8, span: 16 }}>
+            <Checkbox>Trackable by dashboard</Checkbox>
+          </Form.Item>
+
+          <Form.Item name="isDaily" valuePropName="checked" wrapperCol={{ offset: 8, span: 16 }}>
+            <Checkbox>Is daily routine</Checkbox>
           </Form.Item>
 
           <Form.Item className={s.buttons}>

@@ -15,6 +15,8 @@ model Task {
   title         String    @unique
   time          Int
   active        Boolean   @default(true)
+  trackable     Boolean   @default(true)
+  isDaily       Boolean   @default(true) @map("is_daily")
   activities    Activity[]
 
   @@map(name: "tasks")
