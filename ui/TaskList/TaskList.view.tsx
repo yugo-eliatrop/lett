@@ -5,6 +5,7 @@ import { EditFilled } from "@ant-design/icons";
 import cn from 'classnames';
 
 import { Task } from '../../domain';
+import { round } from "@utils/number-format";
 
 import s from './TaskList.module.css';
 
@@ -27,7 +28,11 @@ export const TaskList: FC<TaskListProps> = ({ data }) => {
                   <strong className={cn(task.active || s.disabled)}>{task.title}</strong>
                 </Link>
               )}
-              description={`Time: ${task.time} mins`}
+              description={(
+                <Link href={`/task/play/${task.id}`}>
+                  <span>{task.time} mins per week, {round(task.time / 7)} per day</span>
+                </Link>
+              )}
             />
           </List.Item>
         )}
