@@ -21,15 +21,15 @@ export const TaskList: FC<TaskListProps> = ({ data }) => {
         dataSource={data}
         itemLayout="horizontal"
         renderItem={(task) => (
-          <List.Item className={s.item} actions={[<Link href={`/task/${task.id}`} key="edit"><EditFilled /></Link>]}>
+          <List.Item className={s.item} actions={[<Link href={`/task/edit/${task.id}`} key="edit"><EditFilled /></Link>]}>
             <List.Item.Meta
               title={(
-                <Link href={`/task/play/${task.id}`}>
+                <Link href={`/task/${task.id}`}>
                   <strong className={cn(task.active || s.disabled)}>{task.title}</strong>
                 </Link>
               )}
               description={(
-                <Link href={`/task/play/${task.id}`}>
+                <Link href={`/task/${task.id}`}>
                   <span>{task.time} mins per week</span>
                   {task.isDaily && <span>,&nbsp;{round(task.time / 7)} per day</span>}
                 </Link>
