@@ -1,56 +1,40 @@
-import { Layout } from '../ui/Layout'
+import { Layout } from '@ui/Layout'
 import { FC } from 'react';
 import { GetServerSideProps } from 'next';
-import { dbService } from '../services/db';
-import { Task } from '../domain';
-import * as O from 'fp-ts/Option';
-import * as TO from 'fp-ts/TaskOption';
-import { pipe, flow } from 'fp-ts/lib/function';
+import { dbService } from '@services/db';
+import { DashboardData } from '../domain';
 
-export const getServerSideProps: GetServerSideProps<DashboardProps> = async () => {
+import { Dashboard } from '@ui/Dashboard';
+
+export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
   const activities = await dbService.activity.findMany();
-  const mostPopularTask = await pipe(
-    TO.tryCatch(() => dbService.task.mostPopular()),
-    TO.chain(flow(TO.fromNullable)),
-    TO.map(t => ({ ...t, time: Number(t.time) })),
-  )();
+  const dashboardData = await dbService.task.dashboardTableQuery();
   const totalMins = activities.reduce((sum, item) => sum + item.time, 0);
   return {
     props: {
       totalMins,
-      mostPopularTask,
+      dashboardData,
     }
   };
 }
 
-type DashboardProps = {
+type HomeProps = {
   totalMins: number;
-  mostPopularTask: O.Option<Task>;
+  dashboardData: DashboardData;
 }
 
-const Dashboard: FC<DashboardProps> = ({ totalMins, mostPopularTask }) => {
+const Home: FC<HomeProps> = ({ totalMins, dashboardData }) => {
   return (
     <Layout title='Dashboard'>
+      <Dashboard data={dashboardData} />
+      <br />
       <p>
         <strong>Total mins:</strong>
         &nbsp;
         <span>{totalMins}</span>
       </p>
-      <p>
-        <strong>Most popular task:</strong>
-        &nbsp;
-        {
-          pipe(
-            mostPopularTask,
-            O.fold(
-              () => <span>not found</span>,
-              (t) => <span>{t.title} ({t.time} mins)</span>
-            )
-          )
-        }
-      </p>
     </Layout>
   )
 };
 
-export default Dashboard;
+export default Home;

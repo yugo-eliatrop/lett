@@ -1,13 +1,17 @@
-import { Task } from '../../domain';
+import { round } from '@utils/number-format';
+import { DashboardData, Task } from '../../domain';
 import { prisma } from './prisma-client';
-import { mostPopularTaskQuery, thisWeekActivitiesOfTask } from './queries';
+import { thisWeekActivitiesOfTaskQuery, dashboardTableQuery } from './queries';
 
 const customTaskQueries = {
-  mostPopular: async (): Promise<Task | undefined> => (await mostPopularTaskQuery())[0],
+  dashboardTableQuery: async (): Promise<DashboardData> => {
+    const data = await dashboardTableQuery();
+    return data.map((item) => ({ ...item, time: Number(item.time), percent: round(Number(item.time) / Number(item.goal) * 100) }));
+  }
 }
 
 const customActivitiesQueries = {
-  byTaskAndThisWeek: async (id: Task['id']) => await thisWeekActivitiesOfTask(id),
+  byTaskAndThisWeek: async (id: Task['id']) => await thisWeekActivitiesOfTaskQuery(id),
 }
 
 export const dbService = {
