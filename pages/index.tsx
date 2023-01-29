@@ -50,7 +50,7 @@ const Home: FC<HomeProps> = ({ totalMins, dashboardData, deutschTotalHours }) =>
       </p>
       {deutschTotalHours && (
         <p>
-          <strong>Deutsch mins:</strong>
+          <strong>Deutsch hours:</strong>
           &nbsp;
           <span>{deutschTotalHours}</span>
           <span>&nbsp;/&nbsp;{round(deutschTotalHours / deutschHoursGoal, 2)}% done</span>
