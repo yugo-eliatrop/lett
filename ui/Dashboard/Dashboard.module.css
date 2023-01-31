@@ -1,3 +1,7 @@
 .dashboardItem + .dashboardItem {
   margin-top: 16px;
 }
+
+.dashboardItem h3 {
+  padding-bottom: 8px;
+}

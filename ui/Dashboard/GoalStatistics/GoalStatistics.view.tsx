@@ -30,12 +30,12 @@ const columns = [
 ];
 
 const mapGoalRecordToTableRow = ({ id, title, goal, time, totalMins }: TaskGoalStatisticsRecord) => {
-  const done = round(totalMins / 60 / goal * 100, 2);
+  const done = pipe(round(totalMins / 60 / goal * 100, 2), p => p > 100 ? 100 : p);
   const minsLeft = pipe(goal * 60 - totalMins, mins => mins < 0 ? 0 : mins);
   const daysLeft = Math.ceil(minsLeft / (time / 7));
   const now = new Date();
-  const lastDay = toDDMMYY(new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysLeft));
-  return { id, title, done, daysLeft, lastDay };
+  const lastDay = daysLeft ? toDDMMYY(new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysLeft)) : null;
+  return { key: id, title, done, daysLeft, lastDay };
 };
 
 export type GoalStatisticsProps = {

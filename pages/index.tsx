@@ -7,8 +7,10 @@ import { TaskGoalStatisticsRecord, TaskStatistics } from '../domain';
 import { Dashboard } from '@ui/Dashboard';
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
+  const t = new Date();
   const taskStatistics = await dbService.task.taskStatistics();
   const goalStatistics = await dbService.task.taskGoalStatistics();
+  console.log('index rendered', new Date().getTime() - t.getTime());
   return {
     props: {
       taskStatistics,

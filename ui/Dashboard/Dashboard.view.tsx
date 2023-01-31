@@ -2,7 +2,7 @@ import { TaskStatistics, TaskStatisticsProps } from "./TaskStatistics";
 import { GoalStatistics, GoalStatisticsProps } from "./GoalStatistics";
 import { FC } from "react";
 
-import s from './Dashboard.module.css';
+import { DashboardItem } from "./DashboardItem.view";
 
 export type DashboardProps = {
   taskStatistics: TaskStatisticsProps['data'];
@@ -13,12 +13,12 @@ export const Dashboard: FC<DashboardProps> = ({ taskStatistics, goalStatistics }
 
   return (
     <>
-      <div className={s.dashboardItem}>
+      <DashboardItem title="Week statistics">
         <TaskStatistics data={taskStatistics} />
-      </div>
-      <div className={s.dashboardItem}>
+      </DashboardItem>
+      <DashboardItem title="Goal statistics">
         <GoalStatistics data={goalStatistics} />
-      </div>
+      </DashboardItem>
     </>
   );
 };

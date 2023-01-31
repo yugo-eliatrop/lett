@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useMemo } from "react";
 import { Table } from "antd";
 
 import { TaskStatisticsItem } from "@domain/task";
@@ -26,6 +26,7 @@ export type TaskStatisticsProps = {
 }
 
 export const TaskStatistics: FC<TaskStatisticsProps> = ({ data }) => {
+  const tableData = useMemo(() => data.map(item => ({ key: item.id, ...item })), [data]);
 
-  return <Table columns={columns} dataSource={data} pagination={false} />
+  return <Table columns={columns} dataSource={tableData} pagination={false} />
 };
