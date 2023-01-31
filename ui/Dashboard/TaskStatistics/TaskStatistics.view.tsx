@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Table } from "antd";
 
-import { DashboardData } from "@domain/task";
+import { TaskStatisticsItem } from "@domain/task";
 
 const columns = [
   {
@@ -10,22 +10,22 @@ const columns = [
     key: 'title',
   },
   {
-    title: 'Time',
+    title: 'Mins',
     dataIndex: 'time',
     key: 'time',
   },
   {
-    title: 'Percent',
+    title: 'Done %',
     dataIndex: 'percent',
     key: 'percent',
   },
 ];
 
-type TableViewProps = {
-  data: DashboardData;
+export type TaskStatisticsProps = {
+  data: TaskStatisticsItem[];
 }
 
-export const TableView: FC<TableViewProps> = ({ data }) => {
+export const TaskStatistics: FC<TaskStatisticsProps> = ({ data }) => {
 
   return <Table columns={columns} dataSource={data} pagination={false} />
 };
