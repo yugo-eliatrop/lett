@@ -18,8 +18,8 @@ type TaskFormViewProps = {
 };
 
 export const TaskFormView: FC<TaskFormViewProps> = ({ onSubmit, onRemove, status, editedTask }) => {
-  const onFinish = (v: { title: string, time: string, active: boolean, trackable: boolean, isDaily: boolean }) => {
-    onSubmit({ ...v, time: +v.time, id: editedTask?.id });
+  const onFinish = (v: { title: string, time: string, active: boolean, trackable: boolean, isDaily: boolean, goal: string }) => {
+    onSubmit({ ...v, time: +v.time, id: editedTask?.id, goal: v.goal ? +v.goal : null });
   };
 
   const router = useRouter();
@@ -58,7 +58,7 @@ export const TaskFormView: FC<TaskFormViewProps> = ({ onSubmit, onRemove, status
           name="basic"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
-          initialValues={editedTask || { title: '', time: 35, active: true, trackable: true, isDaily: true }}
+          initialValues={editedTask || { title: '', time: 35, active: true, trackable: true, isDaily: true, goal: null }}
           onFinish={onFinish}
           autoComplete="off"
         >
@@ -76,6 +76,13 @@ export const TaskFormView: FC<TaskFormViewProps> = ({ onSubmit, onRemove, status
             rules={[{ required: true, message: 'Please input time' }]}
           >
             <Input type='number' min={35} />
+          </Form.Item>
+
+          <Form.Item
+            label="Goal (hours)"
+            name="goal"
+          >
+            <Input type='number' />
           </Form.Item>
 
           <Form.Item name="active" valuePropName="checked" wrapperCol={{ offset: 8, span: 16 }}>

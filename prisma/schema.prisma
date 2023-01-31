@@ -14,6 +14,7 @@ model Task {
   id            Int       @id @default(autoincrement())
   title         String    @unique
   time          Int
+  goal          Int?
   active        Boolean   @default(true)
   trackable     Boolean   @default(true)
   isDaily       Boolean   @default(true) @map("is_daily")

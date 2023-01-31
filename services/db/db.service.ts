@@ -1,12 +1,19 @@
 import { round } from '@utils/number-format';
-import { DashboardData, Task } from '../../domain';
+import { TaskStatistics, Task, TaskGoalStatisticsRecord } from '../../domain';
 import { prisma } from './prisma-client';
-import { thisWeekActivitiesOfTaskQuery, dashboardTableQuery } from './queries';
+import { thisWeekActivitiesOfTaskQuery, taskStatisticsQuery, trackableTasksWithGoalsQuery, RawTaskGoalStatisticsRecord } from './queries';
 
 const customTaskQueries = {
-  dashboardTableQuery: async (): Promise<DashboardData> => {
-    const data = await dashboardTableQuery();
+  taskStatistics: async (): Promise<TaskStatistics> => {
+    const data = await taskStatisticsQuery();
     return data.map((item) => ({ ...item, time: Number(item.time), percent: round(Number(item.time) / Number(item.goal) * 100) }));
+  },
+  taskGoalStatistics: async (): Promise<TaskGoalStatisticsRecord[]> => {
+    const data = await trackableTasksWithGoalsQuery();
+    return data.map((x: RawTaskGoalStatisticsRecord): TaskGoalStatisticsRecord => {
+      const { id, goal, time, title, total_time } = x;
+      return { id, title, time: Number(time), goal: Number(goal), totalMins: Number(total_time) };
+    });
   }
 }
 

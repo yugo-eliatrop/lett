@@ -6,12 +6,17 @@ export type { Task } from '@prisma/client';
 
 export type EditedTask = NotRequiredId<Task>;
 
-export type DashboardDataItemRaw = Pick<Task, 'id' | 'title' | 'time'> & {
+export type TaskGoalStatisticsRecord = Pick<Task, 'id' | 'title' | 'time'> & {
+  totalMins: number;
   goal: number;
 };
 
-export type DashboardDataItem = Pick<Task, 'id' | 'title' | 'time'> & {
+export type RawTaskStatisticsItem = Pick<Task, 'id' | 'title' | 'time'> & {
+  goal: number;
+};
+
+export type TaskStatisticsItem = Pick<Task, 'id' | 'title' | 'time'> & {
   percent: number;
 };
 
-export type DashboardData = DashboardDataItem[];
+export type TaskStatistics = TaskStatisticsItem[];
