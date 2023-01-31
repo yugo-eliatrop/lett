@@ -30,7 +30,7 @@ const columns = [
 ];
 
 const mapGoalRecordToTableRow = ({ id, title, goal, time, totalMins }: TaskGoalStatisticsRecord) => {
-  const done = round(totalMins / 60 / goal, 2);
+  const done = round(totalMins / 60 / goal * 100, 2);
   const minsLeft = pipe(goal * 60 - totalMins, mins => mins < 0 ? 0 : mins);
   const daysLeft = Math.ceil(minsLeft / (time / 7));
   const now = new Date();

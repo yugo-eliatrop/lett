@@ -5,7 +5,7 @@ export const toMMSS = (value: number): string => {
 };
 
 export const toDDMMYY = (date: string | Date): string => {
-  const d = new Date(date);
-  const extendTo2Symbols = (value: number): string => `${value < 9 ? '0' : ''}${value}`;
+  const d = typeof date === 'string' ? new Date(date) : date;
+  const extendTo2Symbols = (value: number): string => `${value < 10 ? '0' : ''}${value}`;
   return [d.getDate(), d.getMonth() + 1, d.getFullYear() % 100].map(extendTo2Symbols).join('.');
 };
