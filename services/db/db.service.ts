@@ -30,4 +30,7 @@ export const dbService = {
     ...prisma.activity,
     ...customActivitiesQueries,
   },
+  stopwatch: {
+    ...prisma.stopwatch,
+  }
 };
