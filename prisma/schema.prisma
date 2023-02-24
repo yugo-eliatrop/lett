@@ -19,6 +19,7 @@ model Task {
   trackable     Boolean   @default(true)
   isDaily       Boolean   @default(true) @map("is_daily")
   activities    Activity[]
+  stopwatches   Stopwatch[]
 
   @@map(name: "tasks")
 }
@@ -32,4 +33,14 @@ model Activity {
   task          Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
   @@map(name: "activities")
+}
+
+model Stopwatch {
+  id            Int       @id @default(autoincrement())
+  taskId        Int       @map("task_id")
+  startDate     DateTime  @map(name: "start_date")
+
+  task          Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@map(name: "stopwatches")
 }
