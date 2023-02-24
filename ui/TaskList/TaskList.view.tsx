@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { List } from "antd";
 import Link from "next/link";
-import { EditFilled } from "@ant-design/icons";
+import { EditFilled, FieldTimeOutlined } from "@ant-design/icons";
 import cn from 'classnames';
 
 import { Task } from '../../domain';
@@ -11,9 +11,10 @@ import s from './TaskList.module.css';
 
 type TaskListProps = {
   data: Task[];
+  runningTaskIds: Set<number>;
 }
 
-export const TaskList: FC<TaskListProps> = ({ data }) => {
+export const TaskList: FC<TaskListProps> = ({ data, runningTaskIds }) => {
 
   if (data.length) {
     return (
@@ -25,6 +26,7 @@ export const TaskList: FC<TaskListProps> = ({ data }) => {
             <List.Item.Meta
               title={(
                 <Link href={`/task/${task.id}`}>
+                  {runningTaskIds.has(task.id) && <FieldTimeOutlined className={s.timerIcon} />}
                   <strong className={cn(task.active || s.disabled)}>{task.title}</strong>
                 </Link>
               )}

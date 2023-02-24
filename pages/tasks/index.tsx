@@ -9,18 +9,20 @@ export const getServerSideProps: GetServerSideProps<TasksPageProps> = async () =
   const rawTasks = (await dbService.task.findMany()).sort((a, b) => a.title > b.title ? 1 : -1)
   const activeTasks = rawTasks.filter(t => t.active);
   const disabledTasks = rawTasks.filter(t => !t.active);
-  return { props: { tasks: [ ...activeTasks, ...disabledTasks ] } };
+  const runningTaskIds = (await dbService.stopwatch.findMany()).map(sw => sw.taskId);
+  return { props: { tasks: [ ...activeTasks, ...disabledTasks ], runningTaskIds } };
 }
 
 type TasksPageProps = {
   tasks: Task[];
+  runningTaskIds: number[];
 }
 
-const TasksPage: FC<TasksPageProps> = ({ tasks }) => {
+const TasksPage: FC<TasksPageProps> = ({ tasks, runningTaskIds }) => {
 
   return (
     <Layout title="Tasks">
-      <TaskList data={tasks} />
+      <TaskList data={tasks} runningTaskIds={new Set(runningTaskIds)} />
     </Layout>
   )
 };
