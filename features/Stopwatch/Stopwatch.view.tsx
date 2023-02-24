@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from "react";
 
 import * as O from 'fp-ts/Option';
+import * as RD from '@devexperts/remote-data-ts';
 import { Card, Button } from "antd";
 import { pipe } from "fp-ts/lib/function";
 
@@ -10,7 +11,7 @@ import { interval, of, switchMap } from "rxjs";
 import { Blackout } from "@ui/Blackout";
 
 type StopwatchViewProps = {
-  startDate: O.Option<Date>;
+  startDate: RD.RemoteData<Error, O.Option<Date>>;
   onStop: () => void;
   onStart: () => void;
   theme?: {
@@ -29,12 +30,21 @@ export const StopwatchView: FC<StopwatchViewProps> = ({ startDate, onStart, onSt
   };
 
   useEffect(() => {
-    console.log({startDate})
     const sub = pipe(
       startDate,
+      RD.fold(
+        () => O.none,
+        () => O.none,
+        () => O.none,
+        (d) => d,
+      ),
+      O.map((d) => {
+        setStopwatch(O.of(Math.floor((new Date().getTime() - d.getTime()) / 1000)));
+        return d;
+      }),
       O.map(
         (d) => interval(1000).pipe(
-            switchMap(() => of(O.of(Math.floor((new Date().getTime() - d.getTime()) / 1000)))
+            switchMap(() => of(O.of(Math.floor((new Date().getTime() - d.getTime()) / 1000))),
           )
         ).subscribe(setStopwatch),
       )
@@ -46,7 +56,7 @@ export const StopwatchView: FC<StopwatchViewProps> = ({ startDate, onStart, onSt
 
   return (
     <Card className={theme?.card} size="small" title="Stopwatch">
-      <Blackout isActive={disabled}>
+      <Blackout isActive={disabled || RD.isPending(startDate)}>
         <div className={theme?.timeBox}>
           {
             pipe(

@@ -10,35 +10,37 @@ import { flow, pipe } from "fp-ts/lib/function";
 const rdToOption = <T>(rd: RD.RemoteData<unknown, T>): O.Option<T> => RD.isSuccess(rd) ? O.fromNullable(rd.value) : O.none;
 
 export const createStopwatchVM = (task: Task, onFinish: (mins: number) => void) => {
-  const stopwatchBS$ = new BehaviorSubject<O.Option<Stopwatch>>(O.none);
+  const stopwatchBS$ = new BehaviorSubject<RD.RemoteData<Error, O.Option<Stopwatch>>>(RD.pending);
 
-  const loadStopwatch = (): Observable<O.Option<Stopwatch>> => from(apiStopwatchCheck({ taskId: task.id })).pipe(
-    switchMap(
-      flow(
-        rdToOption,
-        O.chain(x => x),
-        of
-      )
-    )
-  );
+  const loadStopwatch = () => from(apiStopwatchCheck({ taskId: task.id }));
 
   const stopwatch$ = merge(
     stopwatchBS$.asObservable(),
     loadStopwatch(),
   );
 
-  const startDate$: Observable<O.Option<Date>> = stopwatch$.pipe(switchMap(flow(O.map(sw => new Date(sw.startDate)), of)));
+  const startDate$: Observable<RD.RemoteData<Error, O.Option<Date>>> = stopwatch$.pipe(switchMap(flow(
+    RD.map(flow(O.map(sw => new Date(sw.startDate)))),
+    of
+  )));
 
-  const onStart$ = of(() => apiStopwatchCreate({ taskId: task.id }).then(
+  const onStart$ = of(() => {
+    stopwatchBS$.next(RD.pending);
+    apiStopwatchCreate({ taskId: task.id }).then(
     flow(
-      rdToOption,
+      RD.map(O.of),
       sw => stopwatchBS$.next(sw),
     )
-  ));
+  )});
 
   const onStop$ = of(() => {
     stopwatch$.pipe(
-      switchMap(flow(O.map(sw => sw.id), of))
+      switchMap(flow(RD.fold(
+        () => O.none,
+        () => O.none,
+        () => O.none,
+        flow(O.map(sw => sw.id)),
+      ), of))
     ).subscribe(id => {
       pipe(
         id,
@@ -47,7 +49,7 @@ export const createStopwatchVM = (task: Task, onFinish: (mins: number) => void) 
         TO.chain(flow(rdToOption, TO.fromOption)),
         TO.map(mins => {
           onFinish(mins);
-          stopwatchBS$.next(O.none);
+          stopwatchBS$.next(RD.initial);
         }),
       )();
     });
