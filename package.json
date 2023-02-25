@@ -1,13 +1,14 @@
 {
-  "name": "ck-editor-test",
-  "version": "0.1.0",
+  "name": "lett",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "yarn gen:api && next dev",
-    "build": "yarn gen:api && next build",
+    "dev": "yarn gen:api && yarn gen:routes && next dev",
+    "build": "yarn gen:api && yarn gen:routes && next build",
     "start": "next start -p 7100",
     "test": "tsc test.ts && node test.js",
-    "gen:api": "ts-node --project ./tsconfig.node.json ./scripts/generate-api-client.ts",
+    "gen:api": "ts-node --project ./tsconfig.node.json ./scripts/generate-api-client.ts && yarn eslint ./api-client.ts --fix",
+    "gen:routes": "ts-node --project ./tsconfig.node.json ./scripts/generate-routes.ts && yarn eslint ./routes.ts --fix",
     "lint": "yarn eslint . --ext .ts,.tsx",
     "lint:fix": "yarn lint --fix",
     "prepare": "husky install"

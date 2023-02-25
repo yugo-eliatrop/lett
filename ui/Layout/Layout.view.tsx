@@ -1,3 +1,4 @@
+import { routes } from '@routes';
 import { Layout as AntdLayout, Menu } from 'antd';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -10,9 +11,9 @@ const { Header, Content, Footer } = AntdLayout;
 type PageInfo = { label: string; url: string };
 
 const menuItems: PageInfo[] = [
-  { label: 'Dashboard', url: '/' },
-  { label: 'Tasks', url: '/tasks' },
-  { label: 'Create', url: '/task/create' },
+  { label: 'Dashboard', url: routes.index() },
+  { label: 'Tasks', url: routes.tasks() },
+  { label: 'Create', url: routes.taskCreate() },
 ];
 
 type LayoutProps = PropsWithChildren<{

@@ -1,26 +1,15 @@
 import { sequenceS } from 'fp-ts/lib/Apply';
 import { pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
-import { Dirent } from 'fs';
-import { readdir, readFile, writeFile } from 'fs/promises';
+import { readFile, writeFile } from 'fs/promises';
 import * as t from 'io-ts';
-import { join } from 'path';
+
+import { log } from '../utils/log';
+import { allFilesInDir } from './utils';
 
 const apiPath = './pages/api';
 const apiClientMetodRegex = /@api-client-method:.{0,}(GET|POST|PUT|DELETE)/;
 const apiUrlRegex = /^.+(\/api.+)\.ts$/;
-
-const allFilesInDir = async (dirPath: string): Promise<string[]> => {
-  const dirents = await readdir(dirPath, { withFileTypes: true });
-  const dirs: Dirent[] = [];
-  const files: string[] = [];
-  dirents.forEach(item => {
-    if (item.isFile()) files.push(join(dirPath, item.name));
-    else dirs.push(item);
-  });
-  const nextDirsFiles = await Promise.all(dirs.map(item => allFilesInDir(join(dirPath, item.name))));
-  return files.concat(nextDirsFiles.flat());
-};
 
 const MethodCodec = t.union([t.literal('GET'), t.literal('POST'), t.literal('PUT'), t.literal('DELETE')]);
 type Metod = t.TypeOf<typeof MethodCodec>;
@@ -51,6 +40,7 @@ const defineEndpoint = async (path: string): Promise<O.Option<Endpoint>> => {
 };
 
 const run = async () => {
+  log('generating api client')('');
   const files = await allFilesInDir(apiPath);
   const endpoints = (await Promise.all(files.map(defineEndpoint))).filter(O.isSome).map(x => x.value);
 

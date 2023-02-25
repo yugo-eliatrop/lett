@@ -1,4 +1,5 @@
 import { TaskStatisticsItem } from '@domain/task';
+import { routes } from '@routes';
 import { TaskTitle } from '@ui/TaskTitle';
 import { toMMSS } from '@utils/time-format';
 import { Table } from 'antd';
@@ -22,7 +23,7 @@ export const TaskStatistics: FC<TaskStatisticsProps> = ({ data, runningTaskIds }
         dataIndex: 'title',
         key: 'title',
         render: (title: string, item: TaskStatisticsItem) => (
-          <Link href={`/task/${item.id}`}>
+          <Link href={routes.task(item.id)}>
             <TaskTitle isRunning={runningTaskIds.has(item.id)}>{title}</TaskTitle>
           </Link>
         ),

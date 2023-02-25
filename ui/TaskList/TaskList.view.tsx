@@ -1,4 +1,5 @@
 import { EditFilled } from '@ant-design/icons';
+import { routes } from '@routes';
 import { TaskTitle } from '@ui/TaskTitle';
 import { round } from '@utils/number-format';
 import { List } from 'antd';
@@ -24,21 +25,21 @@ export const TaskList: FC<TaskListProps> = ({ data, runningTaskIds }) => {
           <List.Item
             className={s.item}
             actions={[
-              <Link href={`/task/edit/${task.id}`} key="edit">
+              <Link href={routes.taskEdit(task.id)} key="edit">
                 <EditFilled />
               </Link>,
             ]}
           >
             <List.Item.Meta
               title={
-                <Link href={`/task/${task.id}`}>
+                <Link href={routes.task(task.id)}>
                   <TaskTitle isRunning={runningTaskIds.has(task.id)}>
                     <strong className={cn(task.active || s.disabled)}>{task.title}</strong>
                   </TaskTitle>
                 </Link>
               }
               description={
-                <Link href={`/task/${task.id}`}>
+                <Link href={routes.task(task.id)}>
                   <span>{task.time} mins per week</span>
                   {task.isDaily && <span>,&nbsp;{round(task.time / 7)} per day</span>}
                 </Link>
