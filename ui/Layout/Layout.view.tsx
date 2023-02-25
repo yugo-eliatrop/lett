@@ -27,7 +27,7 @@ export const Layout: FC<LayoutProps> = ({ children, title }) => {
     <>
       <Head>
         <title>{`LETT - ${title}`}</title>
-        <meta name="theme-color" content="#000000" />
+        <meta name="theme-color" content="#001628" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <AntdLayout className={s.wrapper}>
