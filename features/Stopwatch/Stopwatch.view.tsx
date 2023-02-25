@@ -1,14 +1,12 @@
-import { FC, useEffect, useState } from "react";
-
-import * as O from 'fp-ts/Option';
+import { BorderOutlined, CaretRightOutlined } from '@ant-design/icons';
 import * as RD from '@devexperts/remote-data-ts';
-import { Card, Button } from "antd";
-import { pipe } from "fp-ts/lib/function";
-
-import { CaretRightOutlined, BorderOutlined } from "@ant-design/icons";
-import { toMMSS } from "@utils/time-format";
-import { interval, of, switchMap } from "rxjs";
-import { Blackout } from "@ui/Blackout";
+import { Blackout } from '@ui/Blackout';
+import { toMMSS } from '@utils/time-format';
+import { Button, Card } from 'antd';
+import { pipe } from 'fp-ts/lib/function';
+import * as O from 'fp-ts/Option';
+import { FC, useEffect, useState } from 'react';
+import { interval, of, switchMap } from 'rxjs';
 
 type StopwatchViewProps = {
   startDate: RD.RemoteData<Error, O.Option<Date>>;
@@ -36,21 +34,23 @@ export const StopwatchView: FC<StopwatchViewProps> = ({ startDate, onStart, onSt
         () => O.none,
         () => O.none,
         () => O.none,
-        (d) => d,
+        d => d
       ),
-      O.map((d) => {
+      O.map(d => {
         setStopwatch(O.of(Math.floor((new Date().getTime() - d.getTime()) / 1000)));
         return d;
       }),
-      O.map(
-        (d) => interval(1000).pipe(
-            switchMap(() => of(O.of(Math.floor((new Date().getTime() - d.getTime()) / 1000))),
-          )
-        ).subscribe(setStopwatch),
+      O.map(d =>
+        interval(1000)
+          .pipe(switchMap(() => of(O.of(Math.floor((new Date().getTime() - d.getTime()) / 1000)))))
+          .subscribe(setStopwatch)
       )
     );
     return () => {
-      pipe(sub, O.map(s => s.unsubscribe()))
+      pipe(
+        sub,
+        O.map(s => s.unsubscribe())
+      );
     };
   }, [startDate]);
 
@@ -58,30 +58,28 @@ export const StopwatchView: FC<StopwatchViewProps> = ({ startDate, onStart, onSt
     <Card className={theme?.card} size="small" title="Stopwatch">
       <Blackout isActive={disabled || RD.isPending(startDate)}>
         <div className={theme?.timeBox}>
-          {
-            pipe(
-              stopwatch,
-              O.map(toMMSS),
-              O.fold(
-                () => (
-                  <>
-                    <span>{toMMSS(0)}</span>
-                    <Button onClick={onStart}>
-                      <CaretRightOutlined />
-                    </Button>
-                  </>
-                ),
-                (t) => (
-                  <>
-                    <span>{t}</span>
-                    <Button onClick={stopStopwatch}>
-                      <BorderOutlined />
-                    </Button>
-                  </>
-                )
+          {pipe(
+            stopwatch,
+            O.map(toMMSS),
+            O.fold(
+              () => (
+                <>
+                  <span>{toMMSS(0)}</span>
+                  <Button onClick={onStart}>
+                    <CaretRightOutlined />
+                  </Button>
+                </>
+              ),
+              t => (
+                <>
+                  <span>{t}</span>
+                  <Button onClick={stopStopwatch}>
+                    <BorderOutlined />
+                  </Button>
+                </>
               )
             )
-          }
+          )}
         </div>
       </Blackout>
     </Card>

@@ -1,10 +1,9 @@
-import { FC, useMemo } from "react";
-import { Table } from "antd";
-
-import { TaskGoalStatisticsRecord } from "@domain/task";
-import { round } from "@utils/number-format";
-import { pipe } from "fp-ts/lib/function";
-import { toDDMMYY } from "@utils/time-format";
+import { TaskGoalStatisticsRecord } from '@domain/task';
+import { round } from '@utils/number-format';
+import { toDDMMYY } from '@utils/time-format';
+import { Table } from 'antd';
+import { pipe } from 'fp-ts/lib/function';
+import { FC, useMemo } from 'react';
 
 const columns = [
   {
@@ -30,8 +29,8 @@ const columns = [
 ];
 
 const mapGoalRecordToTableRow = ({ id, title, goal, time, totalMins }: TaskGoalStatisticsRecord) => {
-  const done = pipe(round(totalMins / 60 / goal * 100, 2), p => p > 100 ? 100 : p);
-  const minsLeft = pipe(goal * 60 - totalMins, mins => mins < 0 ? 0 : mins);
+  const done = pipe(round((totalMins / 60 / goal) * 100, 2), p => (p > 100 ? 100 : p));
+  const minsLeft = pipe(goal * 60 - totalMins, mins => (mins < 0 ? 0 : mins));
   const daysLeft = Math.ceil(minsLeft / (time / 7));
   const now = new Date();
   const lastDay = daysLeft ? toDDMMYY(new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysLeft)) : null;

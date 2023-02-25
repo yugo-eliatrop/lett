@@ -1,8 +1,8 @@
-import { TaskStatistics, TaskStatisticsProps } from "./TaskStatistics";
-import { GoalStatistics, GoalStatisticsProps } from "./GoalStatistics";
-import { FC } from "react";
+import { FC } from 'react';
 
-import { DashboardItem } from "./DashboardItem.view";
+import { DashboardItem } from './DashboardItem.view';
+import { GoalStatistics, GoalStatisticsProps } from './GoalStatistics';
+import { TaskStatistics, TaskStatisticsProps } from './TaskStatistics';
 
 export type DashboardProps = {
   taskStatistics: TaskStatisticsProps['data'];
@@ -11,7 +11,6 @@ export type DashboardProps = {
 };
 
 export const Dashboard: FC<DashboardProps> = ({ taskStatistics, goalStatistics, runningTaskIds }) => {
-
   return (
     <>
       <DashboardItem title="Week statistics">

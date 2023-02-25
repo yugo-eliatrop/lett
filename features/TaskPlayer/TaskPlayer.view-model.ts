@@ -1,7 +1,8 @@
-import { BehaviorSubject, of, from, merge } from "rxjs";
-import { Activity, Task, ActivitiesStatistics } from "../../domain";
 import * as RD from '@devexperts/remote-data-ts';
-import { apiActivityCreate, apiActivityByTask } from "../../api-client";
+import { BehaviorSubject, from, merge, of } from 'rxjs';
+
+import { apiActivityByTask, apiActivityCreate } from '../../api-client';
+import { ActivitiesStatistics, Activity, Task } from '../../domain';
 
 export const createTaskPlayerViewModel = (task: Task) => {
   const lastActivityStatusBS$ = new BehaviorSubject<RD.RemoteData<Error, Activity>>(RD.initial);
@@ -9,10 +10,7 @@ export const createTaskPlayerViewModel = (task: Task) => {
 
   const loadStatistics = () => from(apiActivityByTask({ id: task.id }));
 
-  const weekStatistics$ = merge(
-    weekStatisticsBS$.asObservable(),
-    loadStatistics(),
-  );
+  const weekStatistics$ = merge(weekStatisticsBS$.asObservable(), loadStatistics());
 
   const task$ = of(task);
   const lastActivityStatus$ = lastActivityStatusBS$.asObservable();

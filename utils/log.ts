@@ -1,4 +1,6 @@
-export const log = <T extends unknown>(label: string) => (x: T) => {
-  console.log(label, x);
-  return x;
-}
+export const log =
+  <T>(label: string) =>
+  (x: T) => {
+    console.log(label, x);
+    return x;
+  };

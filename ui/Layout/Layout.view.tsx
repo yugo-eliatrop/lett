@@ -1,9 +1,9 @@
-import { FC, PropsWithChildren } from 'react';
 import { Layout as AntdLayout, Menu } from 'antd';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { FC, PropsWithChildren } from 'react';
 
 import s from './Layout.module.css';
-import Head from 'next/head';
 
 const { Header, Content, Footer } = AntdLayout;
 
@@ -47,5 +47,5 @@ export const Layout: FC<LayoutProps> = ({ children, title }) => {
         </Footer>
       </AntdLayout>
     </>
-  )
+  );
 };

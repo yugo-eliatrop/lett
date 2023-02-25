@@ -1,5 +1,5 @@
-import { Task, ActivitiesStatistics, RawTaskStatisticsItem, TaskGoalStatisticsRecord } from '../../domain';
-import { prisma } from "./prisma-client";
+import { ActivitiesStatistics, RawTaskStatisticsItem, Task, TaskGoalStatisticsRecord } from '../../domain';
+import { prisma } from './prisma-client';
 
 export const thisWeekActivitiesOfTaskQuery = (id: Task['id']): Promise<ActivitiesStatistics> => prisma.$queryRaw`
 SELECT min(a.id) as id, sum(a.time) as time, date_trunc('day', a.created_at) as day

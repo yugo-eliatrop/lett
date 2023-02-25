@@ -1,15 +1,14 @@
-import { FC, useEffect, useMemo, useState } from "react";
+import { ArrowRightOutlined } from '@ant-design/icons';
+import * as RD from '@devexperts/remote-data-ts';
+import { createStopwatch } from '@features/Stopwatch';
+import { ActivityStatisticsView } from '@ui/ActivityStatistics';
+import { Blackout } from '@ui/Blackout';
+import { Button, Card, Input, message, Modal, Spin } from 'antd';
+import { pipe } from 'fp-ts/lib/function';
+import * as O from 'fp-ts/Option';
+import { FC, useEffect, useMemo, useState } from 'react';
 
 import { ActivitiesStatistics, Activity, Task } from '../../domain';
-import * as O from 'fp-ts/Option';
-import * as RD from '@devexperts/remote-data-ts';
-import { Card, Input, Button, Modal, Spin, message } from "antd";
-import { pipe } from "fp-ts/lib/function";
-import { ArrowRightOutlined } from "@ant-design/icons";
-import { Blackout } from "@ui/Blackout";
-import { ActivityStatisticsView } from "@ui/ActivityStatistics";
-import { createStopwatch } from "@features/Stopwatch";
-
 import s from './TaskPlayer.module.css';
 
 export type TaskPlayerProps = {
@@ -17,18 +16,18 @@ export type TaskPlayerProps = {
   weekStatistics: RD.RemoteData<Error, ActivitiesStatistics>;
   createActivity: (time: number) => void;
   lastActivityStatus: RD.RemoteData<Error, Activity>;
-}
+};
 
 export const TaskPlayerView: FC<TaskPlayerProps> = ({ task, createActivity, lastActivityStatus, weekStatistics }) => {
   const [time, setTime] = useState<O.Option<number>>(O.none);
   const [modal, modalContextHolder] = Modal.useModal();
   const [messageApi, messageContextHolder] = message.useMessage();
-  const Stopwatch = useMemo(() => createStopwatch(task, (mins) => pipe(mins, O.of, setTime)), [task, setTime]);
+  const Stopwatch = useMemo(() => createStopwatch(task, mins => pipe(mins, O.of, setTime)), [task, setTime]);
 
   const onSubmit = () => {
     pipe(
       time,
-      O.map(mins => createActivity(mins)),
+      O.map(mins => createActivity(mins))
     );
   };
 
@@ -38,16 +37,16 @@ export const TaskPlayerView: FC<TaskPlayerProps> = ({ task, createActivity, last
       RD.fold(
         () => null,
         () => null,
-        (e) => {
+        e => {
           modal.error({
             title: 'Error',
             content: e.message,
-          })
+          });
         },
-        (d) => {
+        d => {
           messageApi.open({
             type: 'success',
-            content: `${d.time} mins were added to ${task.title} task`
+            content: `${d.time} mins were added to ${task.title} task`,
           });
           setTime(O.none);
         }
@@ -57,10 +56,7 @@ export const TaskPlayerView: FC<TaskPlayerProps> = ({ task, createActivity, last
 
   return (
     <>
-      <Stopwatch
-        theme={s}
-        disabled={RD.isPending(lastActivityStatus)}
-      />
+      <Stopwatch theme={s} disabled={RD.isPending(lastActivityStatus)} />
       <Card className={s.card} size="small" title="Add time">
         <Blackout isActive={RD.isPending(lastActivityStatus)}>
           <div className={s.timeBox}>
@@ -68,7 +64,11 @@ export const TaskPlayerView: FC<TaskPlayerProps> = ({ task, createActivity, last
               type="number"
               placeholder="Mins"
               onChange={e => setTime(O.fromNullable(+e.target.value))}
-              value={pipe(time, O.map(x => `${x}`), O.getOrElse(() => ''))}
+              value={pipe(
+                time,
+                O.map(x => `${x}`),
+                O.getOrElse(() => '')
+              )}
             />
             <Button disabled={O.isNone(time) || !time.value} onClick={onSubmit}>
               <ArrowRightOutlined />
@@ -77,17 +77,15 @@ export const TaskPlayerView: FC<TaskPlayerProps> = ({ task, createActivity, last
         </Blackout>
       </Card>
       <Card className={s.card} size="small" title="Statistics">
-        {
-          pipe(
-            weekStatistics,
-            RD.fold(
-              () => null,
-              () => <Spin />,
-              (e) => <p>{e.message}</p>,
-              (stat) => <ActivityStatisticsView data={stat} goalTime={task.time} />
-            )
+        {pipe(
+          weekStatistics,
+          RD.fold(
+            () => null,
+            () => <Spin />,
+            e => <p>{e.message}</p>,
+            stat => <ActivityStatisticsView data={stat} goalTime={task.time} />
           )
-        }
+        )}
       </Card>
       {modalContextHolder}
       {messageContextHolder}

@@ -1,6 +1,6 @@
-import { NotRequiredId } from './types';
-
 import type { Task } from '@prisma/client';
+
+import { NotRequiredId } from './types';
 
 export type { Task } from '@prisma/client';
 

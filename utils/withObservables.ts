@@ -4,7 +4,10 @@ import { combineLatest, Observable, of, switchMap } from 'rxjs';
 type ObservablesToProps<Props extends Record<string, unknown>> = { [K in keyof Props]: Observable<Props[K]> };
 
 export const withObservables = <Props extends Record<string, unknown>>(Component: FC<Props>) => {
-  return <PartProps extends Partial<Props>>(createMapObj: () => ObservablesToProps<PartProps>, defaultProps: PartProps) => {
+  return <PartProps extends Partial<Props>>(
+    createMapObj: () => ObservablesToProps<PartProps>,
+    defaultProps: PartProps
+  ) => {
     const Container: FC<Omit<Props, keyof PartProps>> = props => {
       const [propsFromObservables, setPropsFromObservables] = useState<PartProps>(defaultProps);
 
@@ -15,7 +18,7 @@ export const withObservables = <Props extends Record<string, unknown>>(Component
         );
         const subscription = combineLatest(obs).subscribe(arr => {
           const partProps: Partial<PartProps> = {};
-          arr.forEach(([key, value]) => partProps[key] = value);
+          arr.forEach(([key, value]) => (partProps[key] = value));
           setPropsFromObservables(partProps as PartProps);
         });
         return () => subscription.unsubscribe();

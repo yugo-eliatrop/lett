@@ -1,10 +1,10 @@
-import { pipe } from "fp-ts/lib/function";
-import { Dirent } from "fs";
-import { readdir, readFile, writeFile } from "fs/promises";
+import { sequenceS } from 'fp-ts/lib/Apply';
+import { pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
+import { Dirent } from 'fs';
+import { readdir, readFile, writeFile } from 'fs/promises';
 import * as t from 'io-ts';
 import { join } from 'path';
-import { sequenceS } from "fp-ts/lib/Apply";
 
 const apiPath = './pages/api';
 const apiClientMetodRegex = /@api-client-method:.{0,}(GET|POST|PUT|DELETE)/;
@@ -17,7 +17,7 @@ const allFilesInDir = async (dirPath: string): Promise<string[]> => {
   dirents.forEach(item => {
     if (item.isFile()) files.push(join(dirPath, item.name));
     else dirs.push(item);
-  })
+  });
   const nextDirsFiles = await Promise.all(dirs.map(item => allFilesInDir(join(dirPath, item.name))));
   return files.concat(nextDirsFiles.flat());
 };
@@ -29,38 +29,31 @@ type Endpoint = {
   url: string;
   name: string;
   method: Metod;
-}
+};
 
-const findMethod = (text: string): O.Option<Metod> => pipe(
-  text.match(apiClientMetodRegex)?.[1],
-  MethodCodec.decode,
-  O.fromEither,
-);
+const findMethod = (text: string): O.Option<Metod> =>
+  pipe(text.match(apiClientMetodRegex)?.[1], MethodCodec.decode, O.fromEither);
 
-const genUrl = (path: string): O.Option<string> => pipe(
-  path,
-  s => s.match(apiUrlRegex)?.[1],
-  O.fromNullable,
-);
+const genUrl = (path: string): O.Option<string> => pipe(path, s => s.match(apiUrlRegex)?.[1], O.fromNullable);
 
 const urlToName = (url: string): string => {
   const tokens = url.split('/').filter(t => t);
   const capitalizeFirstLetter = (s: string) => s[0].toUpperCase() + s.slice(1, s.length);
   return [tokens[0], ...tokens.slice(1, tokens.length).map(capitalizeFirstLetter)].join('');
-}
+};
 
 const defineEndpoint = async (path: string): Promise<O.Option<Endpoint>> => {
   const file = await readFile(path, { encoding: 'utf-8' });
   return pipe(
     sequenceS(O.Apply)({ method: findMethod(file), url: genUrl(path) }),
-    O.bind('name', ({ url }) => O.of(urlToName(url))),
+    O.bind('name', ({ url }) => O.of(urlToName(url)))
   );
-}
+};
 
 const run = async () => {
   const files = await allFilesInDir(apiPath);
   const endpoints = (await Promise.all(files.map(defineEndpoint))).filter(O.isSome).map(x => x.value);
-  
+
   const script = `import type { NextApiRequest, NextApiResponse } from 'next';
 import * as RD from '@devexperts/remote-data-ts';
 import * as E from 'fp-ts/Either';
@@ -93,10 +86,11 @@ const apiMethodFactory = <H extends NextApiHandler>(url: string, method: string)
   };
 };
 
-${endpoints.map(
+${endpoints
+  .map(
     ({ url, method, name }) => `export const ${name} = apiMethodFactory<typeof ${name}Handler>('${url}', '${method}');`
-  ).join('\n')
-}
+  )
+  .join('\n')}
 `;
   await writeFile('api-client.ts', script);
 };
