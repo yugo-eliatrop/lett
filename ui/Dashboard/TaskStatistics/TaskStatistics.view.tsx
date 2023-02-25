@@ -2,7 +2,7 @@ import { TaskStatisticsItem } from '@domain/task';
 import { routes } from '@routes';
 import { TaskTitle } from '@ui/TaskTitle';
 import { toMMSS } from '@utils/time-format';
-import { Table } from 'antd';
+import { Table, Typography } from 'antd';
 import Link from 'next/link';
 import { FC, useMemo } from 'react';
 
@@ -50,5 +50,12 @@ export const TaskStatistics: FC<TaskStatisticsProps> = ({ data, runningTaskIds }
     [runningTaskIds]
   );
 
-  return <Table columns={columns} dataSource={tableData} pagination={false} />;
+  const totalTime = useMemo(() => toMMSS(data.reduce((sum, item) => sum + item.time, 0)), [data]);
+
+  return (
+    <>
+      <Table columns={columns} dataSource={tableData} pagination={false} />
+      <Typography.Text type="secondary">Total time: {totalTime}</Typography.Text>
+    </>
+  );
 };

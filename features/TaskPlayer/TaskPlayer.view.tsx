@@ -3,7 +3,7 @@ import * as RD from '@devexperts/remote-data-ts';
 import { createStopwatch } from '@features/Stopwatch';
 import { ActivityStatisticsView } from '@ui/ActivityStatistics';
 import { Blackout } from '@ui/Blackout';
-import { Button, Card, Input, message, Modal, Spin } from 'antd';
+import { Button, Card, Input, message, Modal, Spin, Typography } from 'antd';
 import { pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
 import { FC, useEffect, useMemo, useState } from 'react';
@@ -82,7 +82,7 @@ export const TaskPlayerView: FC<TaskPlayerProps> = ({ task, createActivity, last
           RD.fold(
             () => null,
             () => <Spin />,
-            e => <p>{e.message}</p>,
+            e => <Typography.Text>{e.message}</Typography.Text>,
             stat => <ActivityStatisticsView data={stat} goalTime={task.time} />
           )
         )}

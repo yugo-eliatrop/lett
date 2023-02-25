@@ -2,7 +2,7 @@ import { BorderOutlined, CaretRightOutlined } from '@ant-design/icons';
 import * as RD from '@devexperts/remote-data-ts';
 import { Blackout } from '@ui/Blackout';
 import { toMMSS } from '@utils/time-format';
-import { Button, Card } from 'antd';
+import { Button, Card, Typography } from 'antd';
 import { pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
 import { FC, useEffect, useState } from 'react';
@@ -64,7 +64,7 @@ export const StopwatchView: FC<StopwatchViewProps> = ({ startDate, onStart, onSt
             O.fold(
               () => (
                 <>
-                  <span>{toMMSS(0)}</span>
+                  <Typography.Text>{toMMSS(0)}</Typography.Text>
                   <Button onClick={onStart}>
                     <CaretRightOutlined />
                   </Button>
@@ -72,7 +72,7 @@ export const StopwatchView: FC<StopwatchViewProps> = ({ startDate, onStart, onSt
               ),
               t => (
                 <>
-                  <span>{t}</span>
+                  <Typography.Text>{t}</Typography.Text>
                   <Button onClick={stopStopwatch}>
                     <BorderOutlined />
                   </Button>

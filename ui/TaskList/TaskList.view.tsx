@@ -2,7 +2,7 @@ import { EditFilled } from '@ant-design/icons';
 import { routes } from '@routes';
 import { TaskTitle } from '@ui/TaskTitle';
 import { round } from '@utils/number-format';
-import { List } from 'antd';
+import { List, Typography } from 'antd';
 import cn from 'classnames';
 import Link from 'next/link';
 import { FC } from 'react';
@@ -34,14 +34,16 @@ export const TaskList: FC<TaskListProps> = ({ data, runningTaskIds }) => {
               title={
                 <Link href={routes.task(task.id)}>
                   <TaskTitle isRunning={runningTaskIds.has(task.id)}>
-                    <strong className={cn(task.active || s.disabled)}>{task.title}</strong>
+                    <Typography.Text className={cn(task.active || s.disabled)}>{task.title}</Typography.Text>
                   </TaskTitle>
                 </Link>
               }
               description={
                 <Link href={routes.task(task.id)}>
-                  <span>{task.time} mins per week</span>
-                  {task.isDaily && <span>,&nbsp;{round(task.time / 7)} per day</span>}
+                  <Typography.Text type="secondary">{task.time} mins per week</Typography.Text>
+                  {task.isDaily && (
+                    <Typography.Text type="secondary">,&nbsp;{round(task.time / 7)} per day</Typography.Text>
+                  )}
                 </Link>
               }
             />
@@ -51,5 +53,5 @@ export const TaskList: FC<TaskListProps> = ({ data, runningTaskIds }) => {
     );
   }
 
-  return <p>No tasks yet</p>;
+  return <Typography.Text>No tasks yet</Typography.Text>;
 };

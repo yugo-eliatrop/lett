@@ -1,5 +1,5 @@
 import { routes } from '@routes';
-import { Layout as AntdLayout, Menu } from 'antd';
+import { Layout as AntdLayout, Menu, Typography } from 'antd';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { FC, PropsWithChildren } from 'react';
@@ -40,11 +40,13 @@ export const Layout: FC<LayoutProps> = ({ children, title }) => {
           />
         </Header>
         <Content className={s.content}>
-          <h2 className={s.title}>{title}</h2>
+          <Typography.Title className={s.title} level={3}>
+            {title}
+          </Typography.Title>
           {children}
         </Content>
         <Footer className={s.footer}>
-          <span>LETT - YUGO</span>
+          <Typography.Text>LETT - YUGO</Typography.Text>
         </Footer>
       </AntdLayout>
     </>

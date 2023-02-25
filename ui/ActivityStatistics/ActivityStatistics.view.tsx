@@ -1,5 +1,6 @@
 import { ActivitiesStatistics } from '@domain/activity';
 import { toDDMMYY } from '@utils/time-format';
+import { Typography } from 'antd';
 import { FC } from 'react';
 
 import s from './ActivityStatistics.module.css';
@@ -18,20 +19,20 @@ export const ActivityStatisticsView: FC<ActivityStatisticsProps> = ({ data, goal
       <>
         {data.map(st => (
           <div className={s.line} key={st.id}>
-            <span>{toDDMMYY(st.day)}</span>
-            <span>{st.time}</span>
+            <Typography.Text>{toDDMMYY(st.day)}</Typography.Text>
+            <Typography.Text>{st.time}</Typography.Text>
           </div>
         ))}
         <div className={s.line}>
-          <strong>TOTAL:</strong>
-          <strong>{total}</strong>
+          <Typography.Text strong>TOTAL:</Typography.Text>
+          <Typography.Text strong>{total}</Typography.Text>
         </div>
         <div className={s.line}>
-          <span>Rest:</span>
-          <span>{rest > 0 ? rest : 0}</span>
+          <Typography.Text>Rest:</Typography.Text>
+          <Typography.Text>{rest > 0 ? rest : 0}</Typography.Text>
         </div>
       </>
     );
 
-  return <p>No statistics yet</p>;
+  return <Typography.Text>No statistics yet</Typography.Text>;
 };

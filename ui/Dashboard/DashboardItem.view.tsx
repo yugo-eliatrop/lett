@@ -1,3 +1,4 @@
+import { Typography } from 'antd';
 import { FC, PropsWithChildren } from 'react';
 
 import s from './Dashboard.module.css';
@@ -8,7 +9,7 @@ type DashboardItemProps = PropsWithChildren & {
 
 export const DashboardItem: FC<DashboardItemProps> = ({ children, title }) => (
   <div className={s.dashboardItem}>
-    <h3>{title}</h3>
+    <Typography.Title level={4}>{title}</Typography.Title>
     {children}
   </div>
 );

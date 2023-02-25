@@ -1,6 +1,7 @@
 import { createTaskPlayer } from '@features/TaskPlayer';
 import { dbService } from '@services/db';
 import { Layout } from '@ui/Layout';
+import { Typography } from 'antd';
 import { flow, pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
 import * as TO from 'fp-ts/TaskOption';
@@ -32,7 +33,7 @@ const EditTaskPage: FC<EditTaskPageProps> = ({ task }) => {
     () =>
       pipe(
         task,
-        O.fold((): FC => () => <p>Task not found or disabled</p>, createTaskPlayer)
+        O.fold((): FC => () => <Typography.Text>Task not found or disabled</Typography.Text>, createTaskPlayer)
       ),
     [task]
   );
