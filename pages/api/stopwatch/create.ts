@@ -9,7 +9,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 const handler = async (req: NextApiRequest, res: NextApiResponse<E.Either<string, Stopwatch>>) => {
   const stopwatch = await pipe(req.body, JSON.parse, data =>
     TE.tryCatch(
-      () => dbService.stopwatch.create({ data: { ...data, startDate: new Date() } }),
+      () => dbService.stopwatch.create({ data }),
       e => (e as Error).message
     )
   )();

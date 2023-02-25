@@ -24,7 +24,9 @@ export const createStopwatchVM = (task: Task, onFinish: (mins: number) => void) 
 
   const onStart$ = of(() => {
     stopwatchBS$.next(RD.pending);
-    apiStopwatchCreate({ taskId: task.id }).then(flow(RD.map(O.of), sw => stopwatchBS$.next(sw)));
+    apiStopwatchCreate({ taskId: task.id, startDate: new Date() }).then(
+      flow(RD.map(O.of), sw => stopwatchBS$.next(sw))
+    );
   });
 
   const onStop$ = of(() => {
