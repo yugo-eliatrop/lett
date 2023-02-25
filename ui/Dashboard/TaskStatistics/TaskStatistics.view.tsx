@@ -1,41 +1,53 @@
 import { FC, useMemo } from "react";
 import { Table } from "antd";
+import Link from "next/link";
 
 import { TaskStatisticsItem } from "@domain/task";
+import { toMMSS } from "@utils/time-format";
+import { TaskTitle } from "@ui/TaskTitle";
 
 type SortOrder = 'descend' | 'ascend' | null;
 
-const columns = [
-  {
-    title: 'Title',
-    dataIndex: 'title',
-    key: 'title',
-  },
-  {
-    title: 'Mins',
-    dataIndex: 'time',
-    key: 'time',
-    defaultSortOrder: 'descend' as SortOrder,
-    sorter: {
-      compare: (a: TaskStatisticsItem, b: TaskStatisticsItem) => a.time - b.time
-    }
-  },
-  {
-    title: 'Done %',
-    dataIndex: 'percent',
-    key: 'percent',
-    sorter: {
-      compare: (a: TaskStatisticsItem, b: TaskStatisticsItem) => a.percent - b.percent
-    }
-  },
-];
-
 export type TaskStatisticsProps = {
   data: TaskStatisticsItem[];
+  runningTaskIds: Set<number>;
 }
 
-export const TaskStatistics: FC<TaskStatisticsProps> = ({ data }) => {
+export const TaskStatistics: FC<TaskStatisticsProps> = ({ data, runningTaskIds }) => {
   const tableData = useMemo(() => data.map(item => ({ key: item.id, ...item })), [data]);
+
+  const columns = useMemo(() => ([
+    {
+      title: 'Title',
+      dataIndex: 'title',
+      key: 'title',
+      render: (title: string, item: TaskStatisticsItem) => (
+        <Link href={`/task/${item.id}`}>
+          <TaskTitle isRunning={runningTaskIds.has(item.id)}>
+            {title}
+          </TaskTitle>
+        </Link>
+      )
+    },
+    {
+      title: 'Time',
+      dataIndex: 'time',
+      key: 'time',
+      defaultSortOrder: 'descend' as SortOrder,
+      sorter: {
+        compare: (a: TaskStatisticsItem, b: TaskStatisticsItem) => a.time - b.time
+      },
+      render: (mins: number) => toMMSS(mins),
+    },
+    {
+      title: 'Done %',
+      dataIndex: 'percent',
+      key: 'percent',
+      sorter: {
+        compare: (a: TaskStatisticsItem, b: TaskStatisticsItem) => a.percent - b.percent
+      }
+    },
+  ]), [runningTaskIds]);
 
   return <Table columns={columns} dataSource={tableData} pagination={false} />
 };

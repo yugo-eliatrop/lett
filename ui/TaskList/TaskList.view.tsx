@@ -8,6 +8,7 @@ import { Task } from '../../domain';
 import { round } from "@utils/number-format";
 
 import s from './TaskList.module.css';
+import { TaskTitle } from "@ui/TaskTitle";
 
 type TaskListProps = {
   data: Task[];
@@ -26,8 +27,9 @@ export const TaskList: FC<TaskListProps> = ({ data, runningTaskIds }) => {
             <List.Item.Meta
               title={(
                 <Link href={`/task/${task.id}`}>
-                  {runningTaskIds.has(task.id) && <FieldTimeOutlined className={s.timerIcon} />}
-                  <strong className={cn(task.active || s.disabled)}>{task.title}</strong>
+                  <TaskTitle isRunning={runningTaskIds.has(task.id)}>
+                    <strong className={cn(task.active || s.disabled)}>{task.title}</strong>
+                  </TaskTitle>
                 </Link>
               )}
               description={(
