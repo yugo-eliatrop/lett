@@ -34,7 +34,7 @@ export const createStopwatchVM = (task: Task, onFinish: (mins: number) => void) 
   )});
 
   const onStop$ = of(() => {
-    stopwatch$.pipe(
+    const s = stopwatch$.pipe(
       switchMap(flow(RD.fold(
         () => O.none,
         () => O.none,
@@ -50,6 +50,7 @@ export const createStopwatchVM = (task: Task, onFinish: (mins: number) => void) 
         TO.map(mins => {
           onFinish(mins);
           stopwatchBS$.next(RD.initial);
+          s.unsubscribe();
         }),
       )();
     });
