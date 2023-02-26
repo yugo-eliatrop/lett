@@ -3,3 +3,7 @@
   align-items: center;
   justify-content: space-between;
 }
+
+.code {
+  font-family: 'Courier New', Courier, monospace;
+}
