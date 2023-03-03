@@ -1,40 +1,32 @@
+import * as RD from '@devexperts/remote-data-ts';
 import { ActivitiesStatistics } from '@domain/activity';
-import { toDDMMYY, toMMSS } from '@utils/time-format';
+import { Blackout } from '@ui/Blackout';
 import { Typography } from 'antd';
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 
-import s from './ActivityStatistics.module.css';
+import { ActivityStatisticsTableView } from './ActivityStatisticsTable.view';
 
 type ActivityStatisticsProps = {
-  data: ActivitiesStatistics;
+  data: RD.RemoteData<Error, ActivitiesStatistics>;
   goalTime: number;
 };
 
 export const ActivityStatisticsView: FC<ActivityStatisticsProps> = ({ data, goalTime }) => {
-  const total = data.reduce((sum, item) => (sum += item.time), 0);
-  const rest = goalTime - total;
+  const [lastData, setLastData] = useState<ActivitiesStatistics>([]);
 
-  if (data.length)
-    return (
-      <>
-        {data.map(st => (
-          <div className={s.line} key={st.id}>
-            <Typography.Text>{toDDMMYY(st.day)}</Typography.Text>
-            <Typography.Text className={s.code}>{toMMSS(st.time)}</Typography.Text>
-          </div>
-        ))}
-        <div className={s.line}>
-          <Typography.Text strong>TOTAL:</Typography.Text>
-          <Typography.Text strong className={s.code}>
-            {toMMSS(total)}
-          </Typography.Text>
-        </div>
-        <div className={s.line}>
-          <Typography.Text>Rest:</Typography.Text>
-          <Typography.Text className={s.code}>{toMMSS(rest > 0 ? rest : 0)}</Typography.Text>
-        </div>
-      </>
-    );
+  useEffect(() => {
+    if (RD.isSuccess(data)) {
+      setLastData(data.value);
+    }
+  }, [data, setLastData]);
 
-  return <Typography.Text>No statistics yet</Typography.Text>;
+  if (RD.isFailure(data)) {
+    return <Typography.Text>{data.error.message}</Typography.Text>;
+  }
+
+  return (
+    <Blackout isActive={RD.isPending(data) || RD.isInitial(data)}>
+      <ActivityStatisticsTableView data={lastData} goalTime={goalTime} />
+    </Blackout>
+  );
 };

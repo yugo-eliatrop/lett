@@ -3,7 +3,7 @@ import * as RD from '@devexperts/remote-data-ts';
 import { createStopwatch } from '@features/Stopwatch';
 import { ActivityStatisticsView } from '@ui/ActivityStatistics';
 import { Blackout } from '@ui/Blackout';
-import { Button, Card, Input, message, Modal, Spin, Typography } from 'antd';
+import { Button, Card, Input, message, Modal } from 'antd';
 import { pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
 import { FC, useEffect, useMemo, useState } from 'react';
@@ -77,15 +77,7 @@ export const TaskPlayerView: FC<TaskPlayerProps> = ({ task, createActivity, last
         </Blackout>
       </Card>
       <Card className={s.card} size="small" title="Statistics">
-        {pipe(
-          weekStatistics,
-          RD.fold(
-            () => null,
-            () => <Spin />,
-            e => <Typography.Text>{e.message}</Typography.Text>,
-            stat => <ActivityStatisticsView data={stat} goalTime={task.time} />
-          )
-        )}
+        <ActivityStatisticsView data={weekStatistics} goalTime={task.time} />
       </Card>
       {modalContextHolder}
       {messageContextHolder}
