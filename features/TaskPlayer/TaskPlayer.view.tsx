@@ -3,6 +3,7 @@ import * as RD from '@devexperts/remote-data-ts';
 import { createStopwatch } from '@features/Stopwatch';
 import { ActivityStatisticsView } from '@ui/ActivityStatistics';
 import { Blackout } from '@ui/Blackout';
+import { GoalStatistics } from '@ui/GoalStatistics';
 import { Button, Card, Input, message, Modal } from 'antd';
 import { pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
@@ -16,9 +17,16 @@ export type TaskPlayerProps = {
   weekStatistics: RD.RemoteData<Error, ActivitiesStatistics>;
   createActivity: (time: number) => void;
   lastActivityStatus: RD.RemoteData<Error, Activity>;
+  totalMins: RD.RemoteData<Error, number>;
 };
 
-export const TaskPlayerView: FC<TaskPlayerProps> = ({ task, createActivity, lastActivityStatus, weekStatistics }) => {
+export const TaskPlayerView: FC<TaskPlayerProps> = ({
+  task,
+  createActivity,
+  lastActivityStatus,
+  weekStatistics,
+  totalMins,
+}) => {
   const [time, setTime] = useState<O.Option<number>>(O.none);
   const [modal, modalContextHolder] = Modal.useModal();
   const [messageApi, messageContextHolder] = message.useMessage();
@@ -46,6 +54,7 @@ export const TaskPlayerView: FC<TaskPlayerProps> = ({ task, createActivity, last
         d => {
           messageApi.open({
             type: 'success',
+            duration: 1,
             content: `${d.time} mins were added to ${task.title} task`,
           });
           setTime(O.none);
@@ -79,6 +88,11 @@ export const TaskPlayerView: FC<TaskPlayerProps> = ({ task, createActivity, last
       <Card className={s.card} size="small" title="Statistics">
         <ActivityStatisticsView data={weekStatistics} goalTime={task.time} />
       </Card>
+      {task.goal && (
+        <Card className={s.card} size="small" title="Goal statistics">
+          <GoalStatistics task={task as Task & { goal: number }} totalTime={totalMins} />
+        </Card>
+      )}
       {modalContextHolder}
       {messageContextHolder}
     </>

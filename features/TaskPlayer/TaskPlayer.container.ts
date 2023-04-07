@@ -8,12 +8,14 @@ import { createTaskPlayerViewModel } from './TaskPlayer.view-model';
 export const createTaskPlayerContainer = (task: Task) => {
   return withObservables(TaskPlayerView)(
     () => {
-      const { createActivity$, lastActivityStatus$, task$, weekStatistics$ } = createTaskPlayerViewModel(task);
+      const { createActivity$, lastActivityStatus$, task$, weekStatistics$, totalMins$ } =
+        createTaskPlayerViewModel(task);
       return {
         lastActivityStatus: lastActivityStatus$,
         createActivity: createActivity$,
         task: task$,
         weekStatistics: weekStatistics$,
+        totalMins: totalMins$,
       };
     },
     {
@@ -22,6 +24,7 @@ export const createTaskPlayerContainer = (task: Task) => {
       createActivity: (time: number) => {},
       lastActivityStatus: RD.initial as RD.RemoteData<Error, Activity>,
       weekStatistics: RD.initial as RD.RemoteData<Error, ActivitiesStatistics>,
+      totalMins: RD.initial as RD.RemoteData<Error, number>,
     }
   );
 };
