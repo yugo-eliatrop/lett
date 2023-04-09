@@ -9,7 +9,7 @@ import { pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
 import { FC, useEffect, useMemo, useState } from 'react';
 
-import { ActivitiesStatistics, Activity, Task } from '../../domain';
+import { ActivitiesStatistics, Activity, Task, TaskMinsStatistics } from '../../domain';
 import s from './TaskPlayer.module.css';
 
 export type TaskPlayerProps = {
@@ -17,7 +17,7 @@ export type TaskPlayerProps = {
   weekStatistics: RD.RemoteData<Error, ActivitiesStatistics>;
   createActivity: (time: number) => void;
   lastActivityStatus: RD.RemoteData<Error, Activity>;
-  totalMins: RD.RemoteData<Error, number>;
+  minsStatistics: RD.RemoteData<Error, TaskMinsStatistics>;
 };
 
 export const TaskPlayerView: FC<TaskPlayerProps> = ({
@@ -25,7 +25,7 @@ export const TaskPlayerView: FC<TaskPlayerProps> = ({
   createActivity,
   lastActivityStatus,
   weekStatistics,
-  totalMins,
+  minsStatistics,
 }) => {
   const [time, setTime] = useState<O.Option<number>>(O.none);
   const [modal, modalContextHolder] = Modal.useModal();
@@ -90,7 +90,7 @@ export const TaskPlayerView: FC<TaskPlayerProps> = ({
       </Card>
       {task.goal && (
         <Card className={s.card} size="small" title="Goal statistics">
-          <GoalStatistics task={task as Task & { goal: number }} totalTime={totalMins} />
+          <GoalStatistics task={task as Task & { goal: number }} minsStatistics={minsStatistics} />
         </Card>
       )}
       {modalContextHolder}
