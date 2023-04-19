@@ -43,19 +43,15 @@ export const GoalStatistics: FC<GoalStatisticsProps> = ({ minsStatistics, task }
       </div>
       <div className={s.line}>
         <Typography.Text>Days left</Typography.Text>
-        <Typography.Text>{daysLeft}</Typography.Text>
+        <Typography.Text>
+          {daysLeft} / {prediction.daysLeft}
+        </Typography.Text>
       </div>
       <div className={s.line}>
         <Typography.Text>Last day</Typography.Text>
-        <Typography.Text>{lastDay || '-'}</Typography.Text>
-      </div>
-      <div className={s.line}>
-        <Typography.Text>Days left *</Typography.Text>
-        <Typography.Text>{prediction.daysLeft}</Typography.Text>
-      </div>
-      <div className={s.line}>
-        <Typography.Text>Last day *</Typography.Text>
-        <Typography.Text>{prediction.lastDay || '-'}</Typography.Text>
+        <Typography.Text>
+          {lastDay || '-'} / {prediction.lastDay || '-'}
+        </Typography.Text>
       </div>
     </Blackout>
   );
